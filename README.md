@@ -7,10 +7,12 @@
 ![React](https://img.shields.io/badge/React-18.2.0-61dafb.svg)
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)
 ![ML](https://img.shields.io/badge/ML-Enabled-orange.svg)
+![Vercel](https://img.shields.io/badge/Vercel-Deployed-black.svg)
+![Render](https://img.shields.io/badge/Render-Deployed-46E3B7.svg)
 
 **Real-time ML-powered bank customer churn prediction with live data streaming and stunning projector-optimized visualizations**
 
-[Features](#features) • [Quick Start](#quick-start) • [Architecture](#architecture) • [Usage](#usage) • [API Docs](#api-documentation)
+[Live Demo](https://bank-churn-prediction-dashboard.vercel.app) • [Features](#features) • [Quick Start](#quick-start) • [API Docs](#api-documentation)
 
 </div>
 
@@ -28,6 +30,7 @@
 - [API Documentation](#api-documentation)
 - [Dashboard Features](#dashboard-features)
 - [Docker Deployment](#docker-deployment)
+- [Cloud Deployment](#cloud-deployment)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
 
@@ -117,11 +120,18 @@ This project is a comprehensive **Bank Customer Churn Prediction System** that c
 
 ## 🚀 Quick Start
 
-### Using Docker (Easiest Method)
+### Live Demo (Deployed)
+
+- **Frontend (Vercel)**: https://bank-churn-prediction-dashboard.vercel.app
+- **Backend API (Render)**: https://bank-churn-prediction-dashboard.onrender.com
+- **API Docs**: https://bank-churn-prediction-dashboard.onrender.com/docs
+
+### Using Docker (Two-Service Architecture)
 
 1. **Clone the repository**
 ```bash
-cd "c:\Users\gagu0\OneDrive\Desktop\dva dashboards\churn"
+git clone https://github.com/gagu00000/bank-churn-prediction-dashboard.git
+cd bank-churn-prediction-dashboard
 ```
 
 2. **Train the ML models** (first time only)
@@ -135,7 +145,7 @@ docker-compose up --build
 ```
 
 4. **Access the dashboard**
-- Frontend: http://localhost:5173
+- Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
 - API Docs: http://localhost:8000/docs
 
@@ -177,39 +187,57 @@ Frontend will run on: http://localhost:5173
 ## 📁 Project Structure
 
 ```
-churn/
+bank-churn-prediction-dashboard/
 ├── backend/
-│   ├── app.py                 # FastAPI application
-│   ├── train_models.py        # ML model training
-│   ├── data_generator.py      # Synthetic data generation
-│   ├── Dockerfile             # Backend Docker config
-│   └── __init__.py
+│   ├── app.py                     # FastAPI application
+│   ├── train_models.py            # ML model training
+│   ├── data_generator.py          # Synthetic data generation
+│   ├── advanced_analytics.py      # Advanced analytics engine
+│   ├── explainability.py          # SHAP-based model explainability
+│   ├── retention_engine.py        # Retention strategy engine
+│   ├── Dockerfile                 # Backend Docker config
+│   └── requirements.txt
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── Dashboard.jsx      # Main dashboard
-│   │   │   ├── Header.jsx         # App header
-│   │   │   ├── LiveStream.jsx     # Streaming component
-│   │   │   ├── ChurnChart.jsx     # Pie chart
-│   │   │   └── GeographyChart.jsx # Bar chart
-│   │   ├── App.jsx            # Root component
-│   │   ├── main.jsx           # Entry point
-│   │   └── index.css          # Global styles
+│   │   ├── components/            # Reusable UI components
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Header.jsx
+│   │   │   ├── LiveStream.jsx
+│   │   │   ├── ChatBot.jsx
+│   │   │   ├── Navigation.jsx
+│   │   │   └── charts/            # Chart components
+│   │   ├── pages/                 # Page-level components
+│   │   │   ├── OverviewPage.jsx
+│   │   │   ├── MLPredictionsPage.jsx
+│   │   │   ├── LiveMonitorPage.jsx
+│   │   │   ├── CustomerAnalysisPage.jsx
+│   │   │   ├── ModelPerformancePage.jsx
+│   │   │   ├── AdvancedAnalyticsPage.jsx
+│   │   │   ├── RetentionStrategyPage.jsx
+│   │   │   └── BusinessImpactPage.jsx
+│   │   ├── context/               # React context providers
+│   │   │   ├── LiveDataContext.jsx
+│   │   │   └── ThemeContext.jsx
+│   │   ├── api.js                 # Centralized API configuration
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
 │   ├── index.html
 │   ├── package.json
 │   ├── vite.config.js
 │   ├── tailwind.config.js
-│   └── Dockerfile             # Frontend Docker config
-├── models/                    # Trained ML models (generated)
+│   ├── Dockerfile.prod            # Production Nginx Docker config
+│   └── nginx.conf                 # Nginx reverse proxy config
+├── models/                        # Trained ML models
 │   ├── random_forest_model.joblib
 │   ├── xgboost_model.joblib
 │   ├── preprocessor.joblib
 │   └── training_results.json
-├── churn data.csv            # Dataset
-├── docker-compose.yml        # Docker orchestration
-├── requirements.txt          # Python dependencies
-├── .gitignore
-├── .dockerignore
+├── churn data.csv                 # Dataset (10,000+ customers)
+├── docker-compose.yml             # Two-service Docker orchestration
+├── render.yaml                    # Render backend deployment config
+├── vercel.json                    # Vercel frontend deployment config
+├── requirements.txt               # Python dependencies
 └── README.md
 ```
 
@@ -326,6 +354,10 @@ Visit http://localhost:8000/docs for Swagger UI
 
 ## 🐳 Docker Deployment
 
+The project uses a **two-service architecture**:
+- **Backend**: FastAPI (Python 3.11) on port 8000
+- **Frontend**: Nginx serving React build on port 3000, reverse-proxying API/WebSocket to backend
+
 ### Build and Run
 ```bash
 docker-compose up --build
@@ -346,10 +378,34 @@ docker-compose logs -f
 docker-compose down
 ```
 
-### Rebuild Specific Service
-```bash
-docker-compose up --build backend
-docker-compose up --build frontend
+### Access
+- **Dashboard**: http://localhost:3000
+- **API**: http://localhost:8000
+- **API Docs**: http://localhost:8000/docs
+
+---
+
+## ☁️ Cloud Deployment
+
+The project is deployed using **Vercel** (frontend) + **Render** (backend).
+
+### Frontend — Vercel
+- **URL**: https://bank-churn-prediction-dashboard.vercel.app
+- **Root Directory**: `frontend`
+- **Build Command**: `npm ci && npm run build`
+- **Output Directory**: `dist`
+- **Environment Variable**: `VITE_API_URL` = Render backend URL
+
+### Backend — Render
+- **URL**: https://bank-churn-prediction-dashboard.onrender.com
+- **Runtime**: Docker
+- **Dockerfile**: `backend/Dockerfile`
+- **Docker Context**: Repository root
+- **Health Check**: `/api/`
+
+### GitHub Repository
+```
+https://github.com/gagu00000/bank-churn-prediction-dashboard
 ```
 
 ---
@@ -397,9 +453,11 @@ Create `.env` file in root:
 PYTHONUNBUFFERED=1
 ENVIRONMENT=development
 
-# Frontend
-VITE_API_URL=http://localhost:8000
+# Frontend (set for cloud deployment, leave empty for local/Docker)
+VITE_API_URL=
 ```
+
+For cloud deployment, set `VITE_API_URL` to your Render backend URL (e.g., `https://bank-churn-prediction-dashboard.onrender.com`).
 
 ---
 
