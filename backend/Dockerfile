@@ -16,14 +16,17 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY backend/ .
 
+# Create models directory first
+RUN mkdir -p /app/models
+
 # Copy models and data
 COPY models/ /app/models/
 
 # Copy data file (quotes for space in filename)
 COPY ["churn data.csv", "/app/churn_data.csv"]
 
-# Create models directory
-RUN mkdir -p /app/models
+# Verify models are present
+RUN ls -la /app/models/
 
 # Expose port
 EXPOSE 8000
