@@ -1,0 +1,40 @@
+# =============================================================================
+# Bank Churn Prediction - Docker Compose (Two-Service Architecture)
+# Backend (FastAPI) + Frontend (Nginx) with reverse proxy
+# Access the dashboard at http://localhost:3000
+# =============================================================================
+
+services:
+  # Backend API Service (FastAPI + ML models)
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: churn_backend
+    volumes:
+      - ./models:/app/models
+      - "./churn data.csv:/app/churn_data.csv"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=production
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # Frontend Service (Nginx serves React + proxies API to backend)
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile.prod
+    container_name: churn_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

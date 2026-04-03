@@ -1,0 +1,14 @@
+# Render deployment configuration for the backend API
+services:
+  - type: web
+    name: churn-prediction-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    plan: free
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    healthCheckPath: /api/
